@@ -36,6 +36,7 @@ class OpenCVCameraConfig(CameraConfig):
     OpenCVCameraConfig(0, 60, 640, 480)
     OpenCVCameraConfig(0, 90, 640, 480)
     OpenCVCameraConfig(0, 30, 1280, 720)
+    OpenCVCameraConfig(0, 30, 1280, 720, format="MJPG")
     ```
     """
 
@@ -46,6 +47,7 @@ class OpenCVCameraConfig(CameraConfig):
     color_mode: str = "rgb"
     channels: int | None = None
     rotation: int | None = None
+    format: str | None = None
     mock: bool = False
 
     def __post_init__(self):

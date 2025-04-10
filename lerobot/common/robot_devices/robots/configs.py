@@ -474,6 +474,15 @@ class So100RobotConfig(ManipulatorRobotConfig):
         }
     )
 
+    # camera can use format "YUYV" or "MJPG" make sure to use the right one
+    # "hand": OpenCVCameraConfig(
+    #             camera_index=4,
+    #             fps=30,
+    #             width=1920,
+    #             height=1080,
+    #             format="MJPG", #here
+    #         )
+
     cameras: dict[str, CameraConfig] = field(
         default_factory=lambda: {
             "laptop": OpenCVCameraConfig(

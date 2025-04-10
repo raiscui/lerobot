@@ -332,6 +332,10 @@ class OpenCVCamera:
         # needs to be re-created.
         self.camera = cv2.VideoCapture(camera_idx, backend)
 
+        # Set video format (if specified).
+        if hasattr(self.config, "format") and self.config.format is not None and len(self.config.format) == 4:
+            self.camera.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self.config.format))
+
         if self.fps is not None:
             self.camera.set(cv2.CAP_PROP_FPS, self.fps)
         if self.capture_width is not None:
@@ -342,6 +346,13 @@ class OpenCVCamera:
         actual_fps = self.camera.get(cv2.CAP_PROP_FPS)
         actual_width = self.camera.get(cv2.CAP_PROP_FRAME_WIDTH)
         actual_height = self.camera.get(cv2.CAP_PROP_FRAME_HEIGHT)
+
+        # Set the buffer size to 1 to reduce latency.
+        self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
+        # Obtain the actually used format.
+        fourcc_int = int(self.camera.get(cv2.CAP_PROP_FOURCC))
+        format_chars = "".join([chr((fourcc_int >> 8 * i) & 0xFF) for i in range(4)])
 
         # Using `math.isclose` since actual fps can be a float (e.g. 29.9 instead of 30)
         if self.fps is not None and not math.isclose(self.fps, actual_fps, rel_tol=1e-3):
@@ -366,6 +377,20 @@ class OpenCVCamera:
         self.capture_width = round(actual_width)
         self.capture_height = round(actual_height)
         self.is_connected = True
+
+        # 记录摄像头信息到日志
+        import logging
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"Camera '{self.camera_index}' has been opened:")
+        logger.info(f"  Resolution: {self.capture_width}x{self.capture_height}")
+        logger.info(f"  Frame rate: {self.fps}")
+        logger.info(f"  Format: {format_chars}")
+
+        # warmup the camera.
+        for _ in range(5):
+            self.camera.read()
+            time.sleep(0.05)
 
     def read(self, temporary_color_mode: str | None = None) -> np.ndarray:
         """Read a frame from the camera returned in the format (height, width, channels)
