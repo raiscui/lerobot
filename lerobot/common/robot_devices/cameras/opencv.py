@@ -350,8 +350,15 @@ class OpenCVCamera:
         # Set the buffer size to 1 to reduce latency.
         self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
+        # Record camera information to the log.
+        import logging
+
+        logger = logging.getLogger(__name__)
+
         # Obtain the actually used format.
         fourcc_int = int(self.camera.get(cv2.CAP_PROP_FOURCC))
+        logger.info(f"fourcc_int: {fourcc_int}")
+
         format_chars = "".join([chr((fourcc_int >> 8 * i) & 0xFF) for i in range(4)])
 
         # Using `math.isclose` since actual fps can be a float (e.g. 29.9 instead of 30)
@@ -378,10 +385,6 @@ class OpenCVCamera:
         self.capture_height = round(actual_height)
         self.is_connected = True
 
-        # 记录摄像头信息到日志
-        import logging
-
-        logger = logging.getLogger(__name__)
         logger.info(f"Camera '{self.camera_index}' has been opened:")
         logger.info(f"  Resolution: {self.capture_width}x{self.capture_height}")
         logger.info(f"  Frame rate: {self.fps}")

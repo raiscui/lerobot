@@ -279,21 +279,19 @@ def record(
 
     listener, events = init_keyboard_listener()
 
-    # Execute a few seconds without recording to:
-    # 1. teleoperate the robot to move it in starting position if no policy provided,
-    # 2. give times to the robot devices to connect and start synchronizing,
-    # 3. place the cameras windows on screen
     enable_teleoperation = policy is None
-    log_say("Warmup record", cfg.play_sounds)
-    warmup_record(robot, events, enable_teleoperation, cfg.warmup_time_s, cfg.display_data, cfg.fps)
-
-    if has_method(robot, "teleop_safety_stop"):
-        robot.teleop_safety_stop()
 
     recorded_episodes = 0
     while True:
         if recorded_episodes >= cfg.num_episodes:
             break
+
+        # 在每次录制前执行预热，而不是只在第一次录制前执行
+        log_say("Warmup record", cfg.play_sounds)
+        warmup_record(robot, events, enable_teleoperation, cfg.warmup_time_s, cfg.display_cameras, cfg.fps)
+
+        if has_method(robot, "teleop_safety_stop"):
+            robot.teleop_safety_stop()
 
         log_say(f"Recording episode {dataset.num_episodes}", cfg.play_sounds)
         record_episode(
@@ -316,6 +314,7 @@ def record(
         ):
             log_say("Reset the environment", cfg.play_sounds)
             reset_environment(robot, events, cfg.reset_time_s, cfg.fps)
+            log_say("Environment rested", cfg.play_sounds)
 
         if events["rerecord_episode"]:
             log_say("Re-record episode", cfg.play_sounds)

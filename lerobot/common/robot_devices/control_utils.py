@@ -79,6 +79,7 @@ def log_control_info(robot: Robot, dt_s, episode_index=None, frame_index=None, f
                 log_dt(f"dtR{name}", robot.logs[key])
 
     info_str = " ".join(log_items)
+
     logging.info(info_str)
 
 
@@ -208,6 +209,7 @@ def record_episode(
         teleoperate=policy is None,
         single_task=single_task,
     )
+    logging.info("录制片段完成。")
 
 
 @safe_stop_image_writer
