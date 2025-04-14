@@ -8,6 +8,7 @@ for pid in $(lsof /dev/video* 2>/dev/null | grep -v "COMMAND" | awk '{print $2}'
 done
 echo "摄像头资源已释放"
 
+export LEROBOT_RERUN_MEMORY_LIMIT=1%
 # export QT_QPA_PLATFORM=xcb
 sudo chmod 666 /dev/ttyACM0
 sudo chmod 666 /dev/ttyACM1

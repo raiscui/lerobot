@@ -23,14 +23,16 @@ done
 
 # Delete HuggingFace cache for lerobot/rais
 echo "删除 HuggingFace 缓存..."
-rm -rf /home/parallels/.cache/huggingface/lerobot/rais/*
-rm -rf /Users/cuiluming/.cache/huggingface/lerobot/rais/*
+rm -rf /home/parallels/.cache/huggingface/lerobot/rais/so100_test
+rm -rf /Users/cuiluming/.cache/huggingface/lerobot/rais/so100_test
 echo "缓存已删除"
 
 # 增加摄像头访问超时值
 # export OPENCV_VIDEOIO_DEBUG=1
 # export OPENCV_VIDEOIO_PRIORITY_V4L2=1
 # export V4L2_TIMEOUT_MS=10000
+
+export LEROBOT_RERUN_MEMORY_LIMIT=80%
 
 python lerobot/scripts/control_robot.py \
   --robot.type=so100 \

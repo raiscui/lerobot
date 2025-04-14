@@ -288,7 +288,7 @@ def record(
 
         # 在每次录制前执行预热，而不是只在第一次录制前执行
         log_say("Warmup record", cfg.play_sounds)
-        warmup_record(robot, events, enable_teleoperation, cfg.warmup_time_s, cfg.display_cameras, cfg.fps)
+        warmup_record(robot, events, enable_teleoperation, cfg.warmup_time_s, cfg.display_data, cfg.fps)
 
         if has_method(robot, "teleop_safety_stop"):
             robot.teleop_safety_stop()
